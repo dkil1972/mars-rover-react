@@ -3,8 +3,8 @@ import React from 'react';
 const Grid = (props) => {
     return (
         <div className="grid">
-            {props.size.coordinates().map(coordinate =>
-                <div className="cell occupied">
+            {props.plateau.coordinates().map((coordinate, idx) =>
+                <div key={idx} className="cell occupied">
                     {coordinate.x + ',' + coordinate.y}
                 </div>)}
         </div>

@@ -3,16 +3,16 @@ import Grid from './components/grid'
 import './App.css';
 import utils from './utils';
 
-const gridSize = {
+const grid = {
   x: 5,
   y: 5,
-  
+  maxCoordinate: input => input - 1,
   coordinates: () => {
-    return utils.range(0, gridSize.x - 1)
+    return utils.range(0, grid.maxCoordinate(grid.x))
       .map((row) =>
-        utils.range(0, gridSize.y - 1)
+        utils.range(0, grid.maxCoordinate(grid.y))
           .map((cell) => {
-            return { x: (gridSize.x - row - 1), y: cell }
+            return { x: (grid.maxCoordinate(grid.x - row)), y: cell }
           }))
       .flat();
   }
@@ -31,7 +31,7 @@ const rover = {
 const rovers = [rover];
 
 function App() {
-  return <Grid size={gridSize} rovers={rovers}/>
+  return <Grid plateau={grid} rovers={rovers}/>
 }
 
 export default App;
