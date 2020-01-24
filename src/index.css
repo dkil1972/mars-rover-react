@@ -1,0 +1,44 @@
+/* See:
+https://codepen.io/geoffgraham/pen/EbVELV for grid styles
+https://css-tricks.com/snippets/css/complete-guide-grid/
+*/
+body {
+  margin: 0 auto;
+}
+
+.grid {
+  /* Grid Fallback */
+  display: flex;
+  flex-wrap: wrap;
+  
+  /* Supports Grid */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(19%, 5fr));
+  grid-auto-rows: minmax(100px, 5fr);
+  grid-gap: .2em;
+}
+
+.cell {
+  /* Demo-Specific Styles */
+  background: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  
+  /* Flex Fallback */
+  margin-left: 5px;
+  margin-right: 5px;
+  flex: 1 1 20%;
+}
+
+.occupied {
+  color: red;
+}
+
+/* If Grid is supported, remove the margin we set for the fallback */
+@supports (display: grid) {
+  .cell {
+    margin: 0;
+  }
+}
