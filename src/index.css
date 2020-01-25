@@ -6,6 +6,15 @@ body {
   margin: 0 auto;
 }
 
+.controls {
+  min-height: 50px;
+}
+
+.controls input {
+  font-size: 20px;
+  padding-right: 15px;
+}
+
 .grid {
   /* Grid Fallback */
   display: flex;
@@ -34,6 +43,7 @@ body {
 
 .occupied {
   color: red;
+  background: url('https://image.flaticon.com/icons/svg/947/947680.svg') no-repeat center;
 }
 
 /* If Grid is supported, remove the margin we set for the fallback */
