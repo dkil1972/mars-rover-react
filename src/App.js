@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Grid from './components/grid'
 import Controls from './components/controls'
 import './App.css';
@@ -16,13 +16,11 @@ const grid = {
             return { x: (grid.maxCoordinate(grid.x - row)), y: cell }
           }))
       .flat();
+  },
+  isOccupied: (coordinate, movingRover) => {
+  return movingRover.startingPosition.x === coordinate.x && 
+          movingRover.startingPosition.y === coordinate.y;
   }
-}
-
-const position = {
-  x: 1,
-  y: 2,
-  orientation: 'N'
 }
 
 const movement = {
@@ -32,23 +30,43 @@ const movement = {
 }
 
 const rover = {
-  startingPosition: position,
-  isOccupying: (coordinate) => {
-    return rover.startingPosition.x === coordinate.x && 
-           rover.startingPosition.y === coordinate.y;
-  },
+  startingPosition: { x: 1, y: 2, orientation: 'N' },
   move: (userInstructions) => {
-    userInstructions.map(instruction => movement[instruction.toLowerCase()](rover.startingPosition))
+    // userInstructions.map(instruction => 
+    //   movement[instruction.toLowerCase()](rover.startingPosition))
+    return {
+      startingPosition: {x: 2, y: 2, orientation: 'N'}, 
+      isOccupying: rover.isOccupying, 
+      move: rover.move
+    };
   }
 }
 
 const rovers = [rover];
 
 function App() {
+  const [userInput, setUserInput] = useState('');
+  const [movingRover, setMovingRover] = useState(rover);
+  const isValid = (input) => { return true; };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if(isValid(userInput)) {
+      setMovingRover(movingRover.move(userInput.split('')));
+    } else {
+      //not sure what to do yet
+    }
+  }
+
+  const handleChange = (event) => setUserInput(event.target.value);
+
   return (
     <>
-      <Controls rovers={rovers} />
-      <Grid plateau={grid} rovers={rovers}/>
+      <Controls rovers={rovers} 
+        userInput={userInput}
+        onSubmit={handleSubmit} 
+        onChange={handleChange}/>
+      <Grid plateau={grid} movingRover={movingRover}/>
     </>
   );
 }

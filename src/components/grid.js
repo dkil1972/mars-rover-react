@@ -1,9 +1,11 @@
 import React from 'react';
 
 const Grid = (props) => {
-    const getClassNameFor = (coordinate) => props.rovers.some(
-            rover => rover.isOccupying(coordinate)
-        ) ? "cell occupied" : "cell";
+
+    const getClassNameFor = (coordinate) => {
+        return props.plateau.isOccupied(coordinate, props.movingRover) 
+            ? "cell occupied" : "cell";
+    }
 
     return (
         <div className="grid">
