@@ -1,9 +1,14 @@
 import React from 'react';
 
 const Grid = (props) => {
+    const isOccupied = (coordinate, currentPosition) => {
+        console.log(`in is Occupied moving rover position is ${currentPosition.x},${currentPosition.y}`)
+        return currentPosition.x === coordinate.x && 
+               currentPosition.y === coordinate.y;
+    }
 
     const getClassNameFor = (coordinate) => {
-        return props.plateau.isOccupied(coordinate, props.movingRover) 
+        return isOccupied(coordinate, props.currentPosition) 
             ? "cell occupied" : "cell";
     }
 

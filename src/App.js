@@ -5,54 +5,94 @@ import './App.css';
 import utils from './utils';
 
 const grid = {
-  x: 5,
-  y: 5,
-  maxCoordinate: input => input - 1,
   coordinates: () => {
-    return utils.range(0, grid.maxCoordinate(grid.x))
+    const maxCoordinate = input => input - 1;
+    const x = 5;
+    const y = 5;
+    return utils.range(0, maxCoordinate(x))
       .map((row) =>
-        utils.range(0, grid.maxCoordinate(grid.y))
+        utils.range(0, maxCoordinate(y))
           .map((cell) => {
-            return { x: (grid.maxCoordinate(grid.x - row)), y: cell }
+            return { x: (maxCoordinate(x - row)), y: cell }
           }))
       .flat();
   },
-  isOccupied: (coordinate, movingRover) => {
-  return movingRover.startingPosition.x === coordinate.x && 
-          movingRover.startingPosition.y === coordinate.y;
-  }
 }
+
+  const turnLeft = (position) => {
+    console.log(`in turnleft position is ${position.orientation}`)
+    let newPosition = {};
+    if(position.orientation === 'N') {
+      newPosition = {x: position.x, y: position.y, orientation: 'W'};
+    }
+    if(position.orientation === 'W') {
+      newPosition = {x: position.x, y: position.y, orientation: 'S'};
+    }
+    if(position.orientation === 'S') {
+      newPosition = {x: position.x, y: position.y, orientation: 'E'};
+    }
+    if(position.orientation === 'E') {
+      newPosition = {x: position.x, y: position.y, orientation: 'N'};
+    }
+    console.log(`in turnleft new position is ${newPosition.orientation}`)
+    return newPosition;
+  }
+
+  const turnRight = (position) => {
+    console.log(`in turnleft position is ${position.orientation}`)
+    let newPosition = {};
+    if(position.orientation === 'N') {
+      newPosition = {x: position.x, y: position.y, orientation: 'E'};
+    }
+    if(position.orientation === 'E') {
+      newPosition = {x: position.x, y: position.y, orientation: 'S'};
+    }
+    if(position.orientation === 'S') {
+      newPosition = {x: position.x, y: position.y, orientation: 'W'};
+    }
+    if(position.orientation === 'W') {
+      newPosition = {x: position.x, y: position.y, orientation: 'N'};
+    }
+    console.log(`in turnleft new position is ${newPosition.orientation}`)
+    return newPosition;
+  }
+
+  const forward = (position) => {
+    let newPosition = {};
+    if(position.orientation === 'N') {
+      newPosition = {x: position.x, y: position.y + 1, orientation: position.orientation};
+    }
+    if(position.orientation === 'S') {
+      newPosition = {x: position.x, y: position.y - 1, orientation: position.orientation};
+    }
+    if(position.orientation === 'E') {
+      newPosition = {x: position.x + 1, y: position.y, orientation: position.orientation};
+    }
+    if(position.orientation === 'W') {
+      newPosition = {x: position.x - 1, y: position.y, orientation: position.orientation};
+    }
+    return newPosition;
+  }
 
 const movement = {
-  l: (position) => console.log(`instruction was left current position is ${position.orientation}`),
-  r: (position) => console.log(`instruction was right current position is ${position.orientation}`),
-  m: (position) => console.log(`instruction was move x,y is ${position.x},${position.y}`)
+  l: turnLeft,
+  r: turnRight,
+  m: forward
 }
 
-const rover = {
-  startingPosition: { x: 1, y: 2, orientation: 'N' },
-  move: (userInstructions) => {
-    // userInstructions.map(instruction => 
-    //   movement[instruction.toLowerCase()](rover.startingPosition))
-    return {
-      startingPosition: {x: 2, y: 2, orientation: 'N'}, 
-      isOccupying: rover.isOccupying, 
-      move: rover.move
-    };
-  }
+const move = (instruction, currentPosition) => {
+  return movement[instruction.toLowerCase()](currentPosition);
 }
-
-const rovers = [rover];
 
 function App() {
   const [userInput, setUserInput] = useState('');
-  const [movingRover, setMovingRover] = useState(rover);
+  const [position, setPosition] = useState({ x: 1, y: 2, orientation: 'N' })
   const isValid = (input) => { return true; };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if(isValid(userInput)) {
-      setMovingRover(movingRover.move(userInput.split('')));
+      setPosition(move(userInput.split('')[0], position))
     } else {
       //not sure what to do yet
     }
@@ -62,11 +102,11 @@ function App() {
 
   return (
     <>
-      <Controls rovers={rovers} 
+      <Controls 
         userInput={userInput}
         onSubmit={handleSubmit} 
         onChange={handleChange}/>
-      <Grid plateau={grid} movingRover={movingRover}/>
+      <Grid plateau={grid} currentPosition={position} />
     </>
   );
 }
