@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 const Grid = (props) => {
+    useEffect(() => {
+        console.log('in grid useEfect');
+    });
+
     const isOccupied = (coordinate, currentPosition) => {
-        console.log(`in is Occupied moving rover position is ${currentPosition.x},${currentPosition.y}`)
         return currentPosition.x === coordinate.x && 
                currentPosition.y === coordinate.y;
     }
