@@ -53,21 +53,53 @@ const grid = {
     return newPosition;
   }
 
+  const isFacing = (orientation) => (position) => position.orientation === orientation;
+  const facingNorth = isFacing('N');
+  const facingSouth = isFacing('S');
+  const facingWest = isFacing('W');
+  const facingEast = isFacing('E');
+
+  const moveUp = (position) => {
+    return { 
+      ...position,
+      x: position.x + 1
+    }
+  };
+
+  const moveDown = (position) => {
+    return { 
+      ...position,
+      x: position.x - 1, 
+    }
+  };
+
+  const moveLeft = (position) => {
+    return { 
+      ...position,
+      y: position.y - 1, 
+    }
+  };
+
+  const moveRight = (position) => {
+    return { 
+      ...position,
+      y: position.y + 1, 
+    }
+  };
+
   const forward = (position) => {
-    let newPosition = {};
-    if(position.orientation === 'N') {
-      newPosition = {x: position.x + 1, y: position.y, orientation: position.orientation};
+    if(facingNorth(position)) {
+      return moveUp(position);
     }
-    if(position.orientation === 'S') {
-      newPosition = {x: position.x - 1, y: position.y, orientation: position.orientation};
+    if(facingSouth(position)) {
+      return moveDown(position);
     }
-    if(position.orientation === 'E') {
-      newPosition = {x: position.x, y: position.y + 1, orientation: position.orientation};
+    if(facingEast(position)) {
+      return moveRight(position);
     }
-    if(position.orientation === 'W') {
-      newPosition = {x: position.x, y: position.y - 1, orientation: position.orientation};
+    if(facingWest(position)) {
+      return moveLeft(position);
     }
-    return newPosition;
   }
 
 const movement = {
