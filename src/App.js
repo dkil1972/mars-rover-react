@@ -56,16 +56,16 @@ const grid = {
   const forward = (position) => {
     let newPosition = {};
     if(position.orientation === 'N') {
-      newPosition = {x: position.x, y: position.y + 1, orientation: position.orientation};
-    }
-    if(position.orientation === 'S') {
-      newPosition = {x: position.x, y: position.y - 1, orientation: position.orientation};
-    }
-    if(position.orientation === 'E') {
       newPosition = {x: position.x + 1, y: position.y, orientation: position.orientation};
     }
-    if(position.orientation === 'W') {
+    if(position.orientation === 'S') {
       newPosition = {x: position.x - 1, y: position.y, orientation: position.orientation};
+    }
+    if(position.orientation === 'E') {
+      newPosition = {x: position.x, y: position.y + 1, orientation: position.orientation};
+    }
+    if(position.orientation === 'W') {
+      newPosition = {x: position.x, y: position.y - 1, orientation: position.orientation};
     }
     return newPosition;
   }
@@ -95,6 +95,8 @@ function App() {
       const timerId = setTimeout(() => {
         const instruction = fullMoveInstructions[movesToBeCompleted.idx];
         const np = move(instruction, movesToBeCompleted.position);
+        console.log(`instruction is: ${instruction} 
+          new position is: ${np.x},${np.y},${np.orientation}`);
         setMovesToBeCompleted({
           position: np, 
           movesLeft: movesToBeCompleted.movesLeft - 1, 
