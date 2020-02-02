@@ -59,33 +59,25 @@ const grid = {
   const facingWest = isFacing('W');
   const facingEast = isFacing('E');
 
+  const add = x => y => x + y;
+  const subtract = x => y => y - x;
+  const addOneTo = add(1);
+  const subtractOneFrom = subtract(1);
   const moveUp = (position) => {
-    return { 
-      ...position,
-      x: position.x + 1
-    }
-  };
+    return { ...position, x: addOneTo(position.x) };
+  }
 
   const moveDown = (position) => {
-    return { 
-      ...position,
-      x: position.x - 1, 
-    }
-  };
+    return { ...position, x: subtractOneFrom(position.x), };
+  }
 
   const moveLeft = (position) => {
-    return { 
-      ...position,
-      y: position.y - 1, 
-    }
-  };
+    return { ...position, y: subtractOneFrom(position.y), };
+  }
 
   const moveRight = (position) => {
-    return { 
-      ...position,
-      y: position.y + 1, 
-    }
-  };
+    return { ...position, y: addOneTo(position.y), };
+  }
 
   const forward = (position) => {
     if(facingNorth(position)) {
