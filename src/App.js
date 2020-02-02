@@ -19,80 +19,76 @@ const grid = {
   },
 }
 
-  const turnLeft = (position) => {
-    let newPosition = {};
-    if(position.orientation === 'N') {
-      newPosition = {x: position.x, y: position.y, orientation: 'W'};
-    }
-    if(position.orientation === 'W') {
-      newPosition = {x: position.x, y: position.y, orientation: 'S'};
-    }
-    if(position.orientation === 'S') {
-      newPosition = {x: position.x, y: position.y, orientation: 'E'};
-    }
-    if(position.orientation === 'E') {
-      newPosition = {x: position.x, y: position.y, orientation: 'N'};
-    }
-    return newPosition;
+const turnLeft = (position) => {
+  if (facingNorth(position)) {
+    return { ...position, orientation: 'W' };
   }
-
-  const turnRight = (position) => {
-    let newPosition = {};
-    if(position.orientation === 'N') {
-      newPosition = {x: position.x, y: position.y, orientation: 'E'};
-    }
-    if(position.orientation === 'E') {
-      newPosition = {x: position.x, y: position.y, orientation: 'S'};
-    }
-    if(position.orientation === 'S') {
-      newPosition = {x: position.x, y: position.y, orientation: 'W'};
-    }
-    if(position.orientation === 'W') {
-      newPosition = {x: position.x, y: position.y, orientation: 'N'};
-    }
-    return newPosition;
+  if (facingWest(position)) {
+    return { ...position, orientation: 'S' };
   }
-
-  const isFacing = (orientation) => (position) => position.orientation === orientation;
-  const facingNorth = isFacing('N');
-  const facingSouth = isFacing('S');
-  const facingWest = isFacing('W');
-  const facingEast = isFacing('E');
-
-  const add = x => y => x + y;
-  const subtract = x => y => y - x;
-  const addOneTo = add(1);
-  const subtractOneFrom = subtract(1);
-  const moveUp = (position) => {
-    return { ...position, x: addOneTo(position.x) };
+  if (facingSouth(position)) {
+    return { ...position, orientation: 'E' };
   }
-
-  const moveDown = (position) => {
-    return { ...position, x: subtractOneFrom(position.x), };
+  if (facingEast(position)) {
+    return { ...position, orientation: 'N' };
   }
+}
 
-  const moveLeft = (position) => {
-    return { ...position, y: subtractOneFrom(position.y), };
+const turnRight = (position) => {
+  if (facingNorth(position)) {
+    return { ...position, orientation: 'E' };
   }
+  if (facingEast(position)) {
+    return { ...position, orientation: 'S' };
+  }
+  if (facingSouth(position)) {
+    return { ...position, orientation: 'W' };
+  }
+  if (facingWest(position)) {
+    return { ...position, orientation: 'N' };
+  }
+}
 
-  const moveRight = (position) => {
-    return { ...position, y: addOneTo(position.y), };
-  }
+const isFacing = (orientation) => (position) => position.orientation === orientation;
+const facingNorth = isFacing('N');
+const facingSouth = isFacing('S');
+const facingWest = isFacing('W');
+const facingEast = isFacing('E');
 
-  const forward = (position) => {
-    if(facingNorth(position)) {
-      return moveUp(position);
-    }
-    if(facingSouth(position)) {
-      return moveDown(position);
-    }
-    if(facingEast(position)) {
-      return moveRight(position);
-    }
-    if(facingWest(position)) {
-      return moveLeft(position);
-    }
+const add = x => y => x + y;
+const subtract = x => y => y - x;
+const addOneTo = add(1);
+const subtractOneFrom = subtract(1);
+const moveUp = (position) => {
+  return { ...position, x: addOneTo(position.x) };
+}
+
+const moveDown = (position) => {
+  return { ...position, x: subtractOneFrom(position.x), };
+}
+
+const moveLeft = (position) => {
+  return { ...position, y: subtractOneFrom(position.y), };
+}
+
+const moveRight = (position) => {
+  return { ...position, y: addOneTo(position.y), };
+}
+
+const forward = (position) => {
+  if (facingNorth(position)) {
+    return moveUp(position);
   }
+  if (facingSouth(position)) {
+    return moveDown(position);
+  }
+  if (facingEast(position)) {
+    return moveRight(position);
+  }
+  if (facingWest(position)) {
+    return moveLeft(position);
+  }
+}
 
 const movement = {
   l: turnLeft,
@@ -106,27 +102,24 @@ const move = (instruction, currentPosition) => {
 
 function App() {
   const [userInput, setUserInput] = useState('');
-  const [movesToBeCompleted, setMovesToBeCompleted] = useState({
+  const [moves, setMoves] = useState({
     position: { x: 1, y: 2, orientation: 'N' }, 
-    movesLeft: 0, 
-    idx: 0 
+    toBeCompleted: 0, 
+    instructionIndex: 0 
   });
   const [fullMoveInstructions, setFullMoveInstruction] = useState('');
   const isValid = (input) => { return true; };
 
   useEffect(() => {
-    if (movesToBeCompleted.movesLeft > 0 && fullMoveInstructions.length) {
+    if (moves.toBeCompleted > 0 && fullMoveInstructions.length) {
       const timerId = setTimeout(() => {
-        const instruction = fullMoveInstructions[movesToBeCompleted.idx];
-        const np = move(instruction, movesToBeCompleted.position);
-        console.log(`instruction is: ${instruction} 
-          new position is: ${np.x},${np.y},${np.orientation}`);
-        setMovesToBeCompleted({
-          position: np, 
-          movesLeft: movesToBeCompleted.movesLeft - 1, 
-          idx: movesToBeCompleted.idx + 1
+        const instruction = fullMoveInstructions[moves.instructionIndex];
+        setMoves({
+          position: move(instruction, moves.position), 
+          toBeCompleted: subtractOneFrom(moves.toBeCompleted), 
+          instructionIndex: addOneTo(moves.instructionIndex),
         });
-      }, 1000);
+      }, 500);
       return () => clearTimeout(timerId);
     }
   })
@@ -135,18 +128,15 @@ function App() {
     event.preventDefault();
     if(isValid(userInput)) {
       setFullMoveInstruction(userInput.split(''));
-      setMovesToBeCompleted({
-        position:movesToBeCompleted.position, 
-        movesLeft: userInput.split('').length, 
-        idx: 0
+      setMoves({
+        position:moves.position, 
+        toBeCompleted: userInput.split('').length, 
+        instructionIndex: 0
       });
     } else {
       //not sure what to do yet
     }
   }
-
-  useEffect(() => {
-  });
 
   const handleChange = (event) => setUserInput(event.target.value);
 
@@ -156,7 +146,7 @@ function App() {
         userInput={userInput}
         onSubmit={handleSubmit} 
         onChange={handleChange}/>
-      <Grid plateau={grid} currentPosition={movesToBeCompleted.position} />
+      <Grid plateau={grid} currentPosition={moves.position} />
     </>
   );
 }
